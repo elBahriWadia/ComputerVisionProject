@@ -2,7 +2,6 @@
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
 ![Flask](https://img.shields.io/badge/flask-3.0-green.svg)
-![License](https://img.shields.io/badge/license-MIT-orange.svg)
 
 Application web d'intelligence artificielle pour la détection, le redressement et l'amélioration de documents.
 
@@ -43,7 +42,3 @@ Ouvrez: http://localhost:5000
 - OpenCV
 - Real-ESRGAN
 - PyTorch
-
-## 📝 License
-
-MIT License - Voir [LICENSE](LICENSE) pour plus de détails.
