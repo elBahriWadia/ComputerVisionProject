@@ -17,8 +17,8 @@ Application web d'intelligence artificielle pour la détection, le redressement 
 ## 🚀 Quick Start
 ```bash
 # Installation
-git clone https://github.com/VOTRE_USERNAME/document-detector-app.git
-cd document-detector-app
+git clone https://github.com/elBahriWadia/ComputerVisionProject
+cd ComputerVisionProject
 
 # Setup (CPU version)
 setup_cpu.bat
