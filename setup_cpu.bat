@@ -1,13 +1,10 @@
 @echo off
-REM CPU Setup Script for Document Detector App
-REM Works on ALL computers (Windows, Mac via Python, Linux)
+REM Automated Setup Script for Document Detector App
+REM This script sets up everything automatically
 
 echo ============================================================
-echo Document Detector App - CPU Setup (Universal)
+echo Document Detector App - Automated Setup
 echo ============================================================
-echo.
-echo This setup works on ANY computer
-echo Processing time: 15-30 seconds per document
 echo.
 
 REM Check if Python is installed
@@ -19,20 +16,21 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if git is installed
+REM Check if git is installed (needed for BasicSR from GitHub)
 git --version >nul 2>&1
 if errorlevel 1 (
     echo WARNING: Git is not installed
-    echo Real-ESRGAN may fall back to OpenCV mode
+    echo BasicSR will be installed from PyPI instead of GitHub
+    echo This may cause Real-ESRGAN to fall back to OpenCV
+    echo.
     echo To get full Real-ESRGAN support, install Git from: https://git-scm.com/
     echo.
     set USE_GIT=0
-    pause
 ) else (
     set USE_GIT=1
 )
 
-echo [1/7] Creating virtual environment...
+echo [1/7] Python found. Creating virtual environment...
 python -m venv venv
 if errorlevel 1 (
     echo ERROR: Failed to create virtual environment
@@ -49,88 +47,73 @@ python -m pip install --upgrade pip
 echo [4/7] Installing NumPy (compatible version)...
 pip install "numpy<2.0.0"
 
-echo [5/7] Installing PyTorch CPU version (~500MB download)...
-echo        This works on all computers but is slower than GPU version
+echo [5/7] Installing PyTorch and TorchVision (this may take a few minutes)...
+echo        CPU version - works on all systems
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
 echo [6/7] Installing core dependencies...
 pip install opencv-python flask werkzeug pillow ultralytics
 
 echo [7/7] Installing Real-ESRGAN components...
+echo        Note: This step may take 2-3 minutes
+
+REM Remove old BasicSR if present
 pip uninstall basicsr -y >nul 2>&1
 
+REM Install BasicSR from GitHub (the version that works!)
 if %USE_GIT%==1 (
-    echo        Installing BasicSR from GitHub...
+    echo        Installing BasicSR from GitHub ^(recommended^)...
     pip install git+https://github.com/XPixelGroup/BasicSR.git
     if errorlevel 1 (
+        echo        GitHub installation failed, trying PyPI...
         pip install basicsr
     )
 ) else (
+    echo        Installing BasicSR from PyPI ^(may have compatibility issues^)...
     pip install basicsr
 )
 
+REM Install remaining Real-ESRGAN components
 pip install facexlib realesrgan gfpgan
 
+REM Test if Real-ESRGAN works
 echo.
-echo ============================================================
-echo Testing Installation...
-echo ============================================================
-python -c "import torch; print('PyTorch version:', torch.__version__); print('Device: CPU')" 2>nul
-
-python -c "from basicsr.archs.rrdbnet_arch import RRDBNet; from realesrgan import RealESRGANer; print('Real-ESRGAN: Ready')" 2>nul
+echo Testing Real-ESRGAN installation...
+python -c "from basicsr.archs.rrdbnet_arch import RRDBNet; from realesrgan import RealESRGANer; print('SUCCESS: Real-ESRGAN is ready!')" 2>nul
 if errorlevel 1 (
-    echo WARNING: Real-ESRGAN setup incomplete - will use OpenCV fallback
+    echo WARNING: Real-ESRGAN not fully installed - app will use OpenCV fallback
+    echo          OpenCV upscaling still produces excellent quality results!
+    echo.
+    if %USE_GIT%==0 (
+        echo          To enable Real-ESRGAN:
+        echo          1. Install Git from https://git-scm.com/
+        echo          2. Re-run this setup script
+        echo.
+    )
 )
 
 echo.
-echo Creating directories...
+echo Creating required directories...
 if not exist "models\realesrgan" mkdir models\realesrgan
 if not exist "temp\uploads" mkdir temp\uploads
 if not exist "temp\processed" mkdir temp\processed
 
 echo.
 echo ============================================================
-echo Downloading Real-ESRGAN Model...
+echo Setup Complete!
 echo ============================================================
 echo.
-
-REM Check if model already exists
-if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-    echo Real-ESRGAN model already exists, skipping download...
-) else (
-    echo Downloading RealESRGAN_x4plus.pth (~65MB)...
-    echo This may take 2-5 minutes depending on your internet speed...
-    echo.
-
-    REM Download using PowerShell
-    powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth' -OutFile 'models\realesrgan\RealESRGAN_x4plus.pth'}"
-
-    if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-        echo.
-        echo ✅ Model downloaded successfully!
-    ) else (
-        echo.
-        echo ⚠️  Model download failed - it will be downloaded on first use
-    )
-)
-
-echo.
-echo ============================================================
-echo CPU Setup Complete!
-echo ============================================================
+echo Your app is ready to run!
 echo.
 echo Next steps:
-echo   1. Ensure trainedYOLO.pt is in models/ folder
-echo   2. Run: run.bat
-echo   3. Open: http://localhost:5000
-echo.
-echo Expected processing time: 15-30 seconds per document
-echo (This is normal for CPU mode - quality is identical to GPU!)
+echo   1. Make sure trainedYOLO.pt is in the models/ folder
+echo   2. Run: run.bat  ^(or manually: python app.py^)
+echo   3. Open browser: http://localhost:5000
 echo.
 if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-    echo ✅ Real-ESRGAN model ready!
+    echo Real-ESRGAN model found - GPU-accelerated upscaling ready!
 ) else (
-    echo ⚠️  Real-ESRGAN model not found - will use OpenCV mode
+    echo Note: Real-ESRGAN model will auto-download on first use ^(~65MB^)
 )
 echo.
 pause

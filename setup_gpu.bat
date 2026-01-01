@@ -90,32 +90,6 @@ if not exist "temp\processed" mkdir temp\processed
 
 echo.
 echo ============================================================
-echo Downloading Real-ESRGAN Model...
-echo ============================================================
-echo.
-
-REM Check if model already exists
-if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-    echo Real-ESRGAN model already exists, skipping download...
-) else (
-    echo Downloading RealESRGAN_x4plus.pth (~65MB)...
-    echo This may take 2-5 minutes depending on your internet speed...
-    echo.
-
-    REM Download using PowerShell
-    powershell -Command "& {[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth' -OutFile 'models\realesrgan\RealESRGAN_x4plus.pth'}"
-
-    if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-        echo.
-        echo ✅ Model downloaded successfully!
-    ) else (
-        echo.
-        echo ⚠️  Model download failed - it will be downloaded on first use
-    )
-)
-
-echo.
-echo ============================================================
 echo GPU Setup Complete!
 echo ============================================================
 echo.
@@ -127,9 +101,9 @@ echo.
 echo ⚡ Expected processing time: 8-12 seconds per document
 echo.
 if exist "models\realesrgan\RealESRGAN_x4plus.pth" (
-    echo ✅ Real-ESRGAN model ready with GPU acceleration!
+    echo ✅ Real-ESRGAN model found!
 ) else (
-    echo ⚠️  Real-ESRGAN model not found - will use OpenCV mode
+    echo Real-ESRGAN model will download on first use (~65MB)
 )
 echo.
 pause

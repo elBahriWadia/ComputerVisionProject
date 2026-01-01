@@ -25,6 +25,7 @@ wheels/
 
 # Virtual Environment
 venv/
+.venv/
 ENV/
 env/
 
@@ -33,8 +34,13 @@ temp/
 *.log
 *.tmp
 
-# Model files (add your actual model after downloading)
+# Model files
+# IMPORTANT: Real-ESRGAN model is INCLUDED in Git (65MB)
+# Other .pth files are excluded
 models/realesrgan/*.pth
+!models/realesrgan/RealESRGAN_x4plus.pth
+
+# Keep the trained YOLO model
 !models/trainedYOLO.pt
 
 # IDE
