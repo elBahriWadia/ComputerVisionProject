@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Detector & Processor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📄 Document Detector & Processor</h1>
+            <p class="subtitle">Upload a document image for AI-powered detection, dewarping, and upscaling</p>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Upload Section -->
+            <section id="upload-section" class="section active">
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-icon">📤</div>
+                    <h2>Drop your document image here</h2>
+                    <p>or click to browse</p>
+                    <input type="file" id="file-input" accept="image/*" hidden>
+                    <button class="btn btn-primary" id="browse-btn">Browse Files</button>
+                    <p class="file-info">Supported formats: PNG, JPG, JPEG, BMP, TIFF, WEBP</p>
+                </div>
+                <div id="file-preview" class="file-preview hidden">
+                    <img id="preview-image" src="" alt="Preview">
+                    <p id="file-name"></p>
+                    <button class="btn btn-success" id="process-btn">Process Document</button>
+                    <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                </div>
+            </section>
+
+            <!-- Processing Section -->
+            <section id="processing-section" class="section">
+                <div class="processing-container">
+                    <div class="spinner"></div>
+                    <h2>Processing your document...</h2>
+                    <div class="progress-steps">
+                        <div class="step" id="step-1">
+                            <div class="step-icon">🔍</div>
+                            <p>Detecting document...</p>
+                        </div>
+                        <div class="step" id="step-2">
+                            <div class="step-icon">✂️</div>
+                            <p>Extracting & cleaning...</p>
+                        </div>
+                        <div class="step" id="step-3">
+                            <div class="step-icon">📐</div>
+                            <p>Straightening borders...</p>
+                        </div>
+                        <div class="step" id="step-4">
+                            <div class="step-icon">⬆️</div>
+                            <p>Upscaling for clarity...</p>
+                        </div>
+                    </div>
+                    <p class="processing-note">This may take 10-30 seconds depending on image size...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="section">
+                <div class="results-container">
+                    <div class="success-icon">✅</div>
+                    <h2>Processing Complete!</h2>
+                    <p class="success-message">Your document has been successfully processed</p>
+
+                    <div class="result-preview">
+                        <img id="result-image" src="" alt="Processed Document">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-download" id="download-btn">
+                            <span class="btn-icon">⬇️</span>
+                            Download Processed Document
+                        </button>
+                        <button class="btn btn-secondary" id="process-another-btn">
+                            <span class="btn-icon">🔄</span>
+                            Process Another Document
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Section -->
+            <section id="error-section" class="section">
+                <div class="error-container">
+                    <div class="error-icon">❌</div>
+                    <h2>Processing Failed</h2>
+                    <p id="error-message" class="error-message"></p>
+                    <button class="btn btn-primary" id="try-again-btn">Try Again</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <p>Powered by YOLO Detection + Real-ESRGAN Upscaling</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
